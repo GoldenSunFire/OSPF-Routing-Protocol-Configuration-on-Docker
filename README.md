@@ -13,7 +13,7 @@
 
 <div class="architecture"><img src="Architecture.png"></div>
 
-<p>For this project, we are not creating any Dockerfiles, images that already exists in docker hub are used. We are using the frr (free range routing) image that provides router containers. For PC terminals, an alpine image will be enough. So, be sure to pull both images before starting on the project.</p>
+<p>For this project, we are not creating any Dockerfiles, images that already exist in docker hub are used. We are using the frr/frrouting (free range routing) image that will provides router containers. For PC terminals, an alpine image will be enough. So, be sure to pull both images before starting on the project.</p>
 
 To pull the images, run the following commands :<br>
 
@@ -21,7 +21,7 @@ To pull the images, run the following commands :<br>
     docker pull alpine
 
 
-<p>In the text file "Docker Commands.txt", there are all the commands used to create this project line by line. However, in the tutorial below, an explanation of these commands is provided</p>
+<p>In the text file "Docker Commands.txt", there are all the commands used to create this project line by line. However, in the tutorial below, an explanation of these commands and steps is provided</p>
 
 ## Tutorial
 

@@ -1,6 +1,6 @@
-<div class="logo"><img src="Docker.png" width="250px" align="center"></div>
+<div class="logo"><img src="Docker.png" width="325px" align="right"></div>
 
-# OSPF-Routing-Protocol-Configuration-on-Docker
+# OSPF Routing Protocol Configuration on Docker
 
 ## Content
 
@@ -11,7 +11,7 @@
 
 <p>In this project, we configure the OSPF dynamic routing protocol. The architecture of the network we are working with is descriped in this image:</p>
 
-<div class="architecture"><img src="Architecture.png" width="600px" align="center"></div>
+<div class="architecture"><img src="Architecture.png"></div>
 
 <p>For this project, we are not creating any Dockerfiles, images that already exists in docker hub are used. We are using the frr (free range routing) image that provides router containers. For PC terminals, an alpine image will be enough. So, be sure to pull both images before starting on the project.</p>
 

@@ -1,0 +1,92 @@
+# Docker commands for configuring a network running with OSPF routing protocol.
+
+1. Pull images from docker hub:
+docker pull frrouting/frr
+docker pull alpine
+
+2. Create the networks:
+docker network create --driver=bridge --subnet=120.0.0.0/24 Network_0
+docker network create --driver=bridge --subnet=120.0.1.0/24 Network_1
+docker network create --driver=bridge --subnet=120.0.2.0/24 Network_2
+docker network create --driver=bridge --subnet=120.0.3.0/24 Network_3
+
+3. Create routers:
+docker run -it -d --cap-add=NET_ADMIN --privileged --name Router_0 --hostname Router_0 --network Network_0 --init frrouting/frr bash
+docker run -it -d --cap-add=NET_ADMIN --privileged --name Router_1 --hostname Router_1 --network Network_0 --network Network_1 --init frrouting/frr bash
+docker run -it -d --cap-add=NET_ADMIN --privileged --name Router_2 --hostname Router_2 --network Network_0 --network Network_2 --init frrouting/frr bash
+docker run -it -d --cap-add=NET_ADMIN --privileged --name Router_2 --hostname Router_2 --network Network_0 --network Network_2 --init frrouting/frr bash
+
+4. Create computers:
+# for network 1
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC0 --hostname PC0 --network Network_0 --init alpine sh
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC1 --hostname PC1 --network Network_0 --init alpine sh
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC2 --hostname PC2 --network Network_0 --init alpine sh
+# for network 2
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC3 --hostname PC3 --network Network_3 --init alpine sh
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC4 --hostname PC4 --network Network_4 --init alpine sh
+# for network 3
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC5 --hostname PC5 --network Network_5 --init alpine sh
+docker run -it -d --cap-add=NET_ADMIN --privileged --name PC6 --hostname PC6 --network Network_6 --init alpine sh
+
+5. Make the created routers as default gateways of PCs:
+# PC0 & PC1 & PC2 (in the container terminal):
+ip route del 0.0.0.0/0 via 120.0.1.1 
+ip route add 0.0.0.0/0 via 120.0.1.2
+# PC3 & PC4 (in the container terminal):
+ip route del 0.0.0.0/0 via 120.0.2.1 
+ip route add 0.0.0.0/0 via 120.0.2.2
+# PC5 & PC6 (in the container terminal):
+ip route del 0.0.0.0/0 via 120.0.3.1 
+ip route add 0.0.0.0/0 via 120.0.3.2
+
+6. Configure OSPF on routers :
+# Router 0 Backbone (in the container terminal):
+bash
+cd /usr/lib/frr
+./watchfrr zebra ospfd &
+vtysh
+configure terminal
+router ospf
+network 120.0.0.0/24 area 0
+exit
+exit
+# Router 1 (in the container terminal):
+bash
+cd /usr/lib/frr
+./watchfrr zebra ospfd &
+vtysh
+configure terminal
+router ospf
+network 120.0.0.0/24 area 0
+network 120.0.1.0/24 area 1
+exit
+exit
+# Router 2 (in the container terminal):
+bash
+cd /usr/lib/frr
+./watchfrr zebra ospfd &
+vtysh
+configure terminal
+router ospf
+network 120.0.0.0/24 area 0
+network 120.0.2.0/24 area 2
+exit
+exit
+# Router 3 (in the container terminal):
+bash
+cd /usr/lib/frr
+./watchfrr zebra ospfd &
+vtysh
+configure terminal
+router ospf
+network 120.0.0.0/24 area 0
+network 120.0.3.0/24 area 3
+exit
+exit
+
+6. Test:
+# FROM PC0 terminal either ping PC6 or traceroute (if installed in container):
+ping PC6
+# From any router terminal, show the routing table:
+vtysh
+show ip route
